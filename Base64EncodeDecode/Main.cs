@@ -16,6 +16,7 @@ namespace Base64EncodeDecode
         private List<FileObject> _data = new List<FileObject>();
         private string _inputFilePath = null;
         private int _stringInputTabCount = 0;
+        private Encoding _encoding;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="frmMain"/> class.
@@ -34,6 +35,8 @@ namespace Base64EncodeDecode
             rtbInputText.AllowDrop = true;
             rtbInputText.DragOver += new DragEventHandler(DropFileInControlt_DragOver);
             rtbInputText.DragDrop += new DragEventHandler(DropFileInControlt_DragDrop);
+
+            this.tableLayoutPanel1.CellPaint += tableLayoutPanel1_CellPaint;
         }
 
         private void DropFileInControlt_DragOver(object sender, DragEventArgs e)
@@ -45,6 +48,7 @@ namespace Base64EncodeDecode
 
         private void DropFileInControlt_DragDrop(object sender, DragEventArgs e)
         {
+            SetBusy();
             if (e.Data.GetData("FileDrop") != null)
             {
                 string[] names = e.Data.GetData("FileDrop") as string[];
@@ -94,10 +98,12 @@ namespace Base64EncodeDecode
                     }
                 }
             }
+            SetNotBusy();
         }
 
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
+            SetBusy();
             try
             {
                 _data.Clear();
@@ -126,6 +132,7 @@ namespace Base64EncodeDecode
             {
                 MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
             }
+            SetNotBusy();
         }
 
         private void rdoFileFormat_CheckedChanged(object sender, EventArgs e)
@@ -136,6 +143,14 @@ namespace Base64EncodeDecode
                 btnOpenFile.Enabled = true;
                 btnPasteFromClipboard.Enabled = false;
                 rtbInputText.Enabled = false;
+                rdoEncNone.Enabled = false;
+                rdoEncAscii.Enabled = false;
+                rdoEncUTF8.Enabled = false;
+                rdoEncUTF7.Enabled = false;
+                rdoEncUTF32.Enabled = false;
+                rdoEncUnicode.Enabled = false;
+                rdoEncBigEndianUnicode.Enabled = false;
+                lblEncDesc.Enabled = false;
             }
         }
 
@@ -147,6 +162,14 @@ namespace Base64EncodeDecode
                 btnOpenFile.Enabled = false;
                 btnPasteFromClipboard.Enabled = true;
                 rtbInputText.Enabled = true;
+                rdoEncNone.Enabled = true;
+                rdoEncAscii.Enabled = true;
+                rdoEncUTF8.Enabled = true;
+                rdoEncUTF7.Enabled = true;
+                rdoEncUTF32.Enabled = true;
+                rdoEncUnicode.Enabled = true;
+                rdoEncBigEndianUnicode.Enabled = true;
+                lblEncDesc.Enabled = true;
             }
         }
 
@@ -164,6 +187,7 @@ namespace Base64EncodeDecode
 
         private void btnEncode_Click(object sender, EventArgs e)
         {
+            SetBusy();
             try
             {
                 if (rdoFileFormat.Checked)
@@ -177,7 +201,7 @@ namespace Base64EncodeDecode
                         LoadFileObjects();
                         if (_data.Count == 1)
                         {
-                            AddTab("Results for " + _data[0], _data[0], EncodeFile(_data[0].FileData));
+                            AddTab("Results for " + _data[0].FileName, _data[0], EncodeFile(_data[0].FileData));
                         }
                         else if (_data.Count > 1)
                         {
@@ -215,10 +239,12 @@ namespace Base64EncodeDecode
             {
                 MessageBox.Show("Error: " + ex.Message, "Error");
             }
+            SetNotBusy();
         }
 
         private void btnDecode_Click(object sender, EventArgs e)
         {
+            SetBusy();
             try
             {
                 if (rdoFileFormat.Checked)
@@ -281,7 +307,6 @@ namespace Base64EncodeDecode
                         }
                         else
                         {
-
                             string fileName = (_inputFilePath.EndsWith("\\")) ? string.Concat(_inputFilePath, "base64.tmp") : string.Concat(_inputFilePath, "\\base64.tmp");
                             FileObject fileData = new FileObject() { FileName = fileName, FileData = GetBytes(dataString) };
                             AddTab(string.Concat("Results for String input (", ++_stringInputTabCount, ")"), fileData, dataString);
@@ -293,11 +318,13 @@ namespace Base64EncodeDecode
             {
                 MessageBox.Show("Error: " + ex.Message, "Error");
             }
+            SetNotBusy();
         }
 
         private void ResetForm()
         {
             rdoFileFormat.Checked = true;
+            rdoEncNone.Checked = true;
             txtFileName.Text = "";
             rtbInputText.Text = "";
             btnPasteFromClipboard.Enabled = false;
@@ -376,6 +403,7 @@ namespace Base64EncodeDecode
             tbp.Controls.Add(cnt);
             tabForms.TabPages.Add(tbp);
             cnt.Show();
+            cnt.Select();
         }
 
         private int GetStringInputTabCount()
@@ -393,16 +421,46 @@ namespace Base64EncodeDecode
 
         private byte[] GetBytes(string str)
         {
-            byte[] bytes = new byte[str.Length * sizeof(char)];
-            System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
+            if (_encoding == Encoding.ASCII)
+                return Encoding.ASCII.GetBytes(str);
+            else if (_encoding == Encoding.UTF8)
+                return Encoding.UTF8.GetBytes(str);
+            else if (_encoding == Encoding.UTF7)
+                return Encoding.UTF7.GetBytes(str);
+            else if (_encoding == Encoding.UTF32)
+                return Encoding.UTF32.GetBytes(str);
+            else if (_encoding == Encoding.Unicode)
+                return Encoding.Unicode.GetBytes(str);
+            else if (_encoding == Encoding.BigEndianUnicode)
+                return Encoding.BigEndianUnicode.GetBytes(str);
+            else
+            {
+                byte[] bytes = new byte[str.Length * sizeof(char)];
+                System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+                return bytes;
+            }
         }
 
         private string GetString(byte[] bytes)
         {
-            char[] chars = new char[bytes.Length / sizeof(char)];
-            System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-            return new string(chars);
+            if (_encoding == Encoding.ASCII)
+                return Encoding.ASCII.GetString(bytes);
+            else if (_encoding == Encoding.UTF8)
+                return Encoding.UTF8.GetString(bytes);
+            else if (_encoding == Encoding.UTF7)
+                return Encoding.UTF7.GetString(bytes);
+            else if (_encoding == Encoding.UTF32)
+                return Encoding.UTF32.GetString(bytes);
+            else if (_encoding == Encoding.Unicode)
+                return Encoding.Unicode.GetString(bytes);
+            else if (_encoding == Encoding.BigEndianUnicode)
+                return Encoding.BigEndianUnicode.GetString(bytes);
+            else
+            {
+                char[] chars = new char[bytes.Length / sizeof(char)];
+                System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
+                return new string(chars);
+            }
         }
 
         private void btnPasteFromClipboard_Click(object sender, EventArgs e)
@@ -422,9 +480,63 @@ namespace Base64EncodeDecode
             _stringInputTabCount = 0;
             foreach (TabPage page in tabForms.TabPages)
             {
-                if (page.Text != "Input Form")
+                if (page.Name != "mainTabPage")
                     tabForms.TabPages.Remove(page);
             }
+        }
+
+        private void SetBusy()
+        {
+            this.Cursor = Cursors.WaitCursor;
+        }
+
+        private void SetNotBusy()
+        {
+            this.Cursor = Cursors.Default;
+        }
+
+        private void rdoEncNone_CheckedChanged(object sender, EventArgs e)
+        {
+             _encoding = null;
+        }
+
+        private void rdoEncAscii_CheckedChanged(object sender, EventArgs e)
+        {
+            _encoding = Encoding.ASCII;
+        }
+
+        private void rdoEncUTF8_CheckedChanged(object sender, EventArgs e)
+        {
+            _encoding = Encoding.UTF8;
+        }
+
+        private void rdoEncUTF7_CheckedChanged(object sender, EventArgs e)
+        {
+            _encoding = Encoding.UTF7;
+        }
+
+        private void rdoEncUTF32_CheckedChanged(object sender, EventArgs e)
+        {
+            _encoding = Encoding.UTF32;
+        }
+
+        private void rdoEncUnicode_CheckedChanged(object sender, EventArgs e)
+        {
+            _encoding = Encoding.Unicode;
+        }
+
+        private void rdoEncBigEndianUnicode_CheckedChanged(object sender, EventArgs e)
+        {
+            _encoding = Encoding.BigEndianUnicode;
+        }
+
+        private void tableLayoutPanel1_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
+        {
+            if (e.Row == 0 || e.Row == 3 || e.Row == 7)
+                e.Graphics.DrawLine(Pens.Black, e.CellBounds.Location, new Point(e.CellBounds.Right, e.CellBounds.Top));
+
+            if (e.Row == 7)
+                e.Graphics.DrawLine(Pens.Black, new Point(e.CellBounds.Left, e.CellBounds.Bottom), new Point(e.CellBounds.Right, e.CellBounds.Bottom));
         }
     }
 }

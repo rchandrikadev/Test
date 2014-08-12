@@ -30,31 +30,41 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.tabForms = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.mainTabPage = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.rdoFileFormat = new System.Windows.Forms.RadioButton();
             this.txtFileName = new System.Windows.Forms.TextBox();
             this.btnOpenFile = new System.Windows.Forms.Button();
             this.rdoTextString = new System.Windows.Forms.RadioButton();
             this.btnPasteFromClipboard = new System.Windows.Forms.Button();
-            this.rtbInputText = new System.Windows.Forms.RichTextBox();
             this.btnEncode = new System.Windows.Forms.Button();
             this.btnDecode = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
+            this.rtbInputText = new System.Windows.Forms.RichTextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.rdoEncBigEndianUnicode = new System.Windows.Forms.RadioButton();
+            this.rdoEncNone = new System.Windows.Forms.RadioButton();
+            this.rdoEncUnicode = new System.Windows.Forms.RadioButton();
+            this.rdoEncUTF32 = new System.Windows.Forms.RadioButton();
+            this.rdoEncAscii = new System.Windows.Forms.RadioButton();
+            this.rdoEncUTF7 = new System.Windows.Forms.RadioButton();
+            this.rdoEncUTF8 = new System.Windows.Forms.RadioButton();
+            this.lblEncDesc = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiClearTabs = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tabForms.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.mainTabPage.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabForms
             // 
-            this.tabForms.Controls.Add(this.tabPage1);
+            this.tabForms.Controls.Add(this.mainTabPage);
             this.tabForms.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabForms.Location = new System.Drawing.Point(0, 24);
             this.tabForms.Name = "tabForms";
@@ -62,16 +72,16 @@
             this.tabForms.Size = new System.Drawing.Size(784, 538);
             this.tabForms.TabIndex = 13;
             // 
-            // tabPage1
+            // mainTabPage
             // 
-            this.tabPage1.Controls.Add(this.tableLayoutPanel1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(776, 512);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Input Form";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.mainTabPage.Controls.Add(this.tableLayoutPanel1);
+            this.mainTabPage.Location = new System.Drawing.Point(4, 22);
+            this.mainTabPage.Name = "mainTabPage";
+            this.mainTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.mainTabPage.Size = new System.Drawing.Size(776, 512);
+            this.mainTabPage.TabIndex = 0;
+            this.mainTabPage.Text = "Input Form";
+            this.mainTabPage.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel1
             // 
@@ -88,21 +98,25 @@
             this.tableLayoutPanel1.Controls.Add(this.rdoFileFormat, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.txtFileName, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.btnOpenFile, 7, 2);
-            this.tableLayoutPanel1.Controls.Add(this.rdoTextString, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.btnPasteFromClipboard, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.rtbInputText, 2, 4);
-            this.tableLayoutPanel1.Controls.Add(this.btnEncode, 3, 5);
-            this.tableLayoutPanel1.Controls.Add(this.btnDecode, 4, 5);
-            this.tableLayoutPanel1.Controls.Add(this.btnReset, 5, 5);
-            this.tableLayoutPanel1.Controls.Add(this.btnExit, 6, 5);
+            this.tableLayoutPanel1.Controls.Add(this.rdoTextString, 1, 4);
+            this.tableLayoutPanel1.Controls.Add(this.btnPasteFromClipboard, 1, 6);
+            this.tableLayoutPanel1.Controls.Add(this.btnEncode, 3, 7);
+            this.tableLayoutPanel1.Controls.Add(this.btnDecode, 4, 7);
+            this.tableLayoutPanel1.Controls.Add(this.btnReset, 5, 7);
+            this.tableLayoutPanel1.Controls.Add(this.btnExit, 6, 7);
+            this.tableLayoutPanel1.Controls.Add(this.rtbInputText, 2, 6);
+            this.tableLayoutPanel1.Controls.Add(this.panel1, 3, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lblEncDesc, 3, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
+            this.tableLayoutPanel1.RowCount = 8;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 10F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 5F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(770, 506);
@@ -145,7 +159,7 @@
             // rdoTextString
             // 
             this.rdoTextString.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.rdoTextString, 7);
+            this.tableLayoutPanel1.SetColumnSpan(this.rdoTextString, 2);
             this.rdoTextString.Location = new System.Drawing.Point(13, 68);
             this.rdoTextString.Name = "rdoTextString";
             this.rdoTextString.Size = new System.Drawing.Size(52, 17);
@@ -159,23 +173,13 @@
             // 
             this.btnPasteFromClipboard.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.btnPasteFromClipboard.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnPasteFromClipboard.Location = new System.Drawing.Point(13, 93);
+            this.btnPasteFromClipboard.Location = new System.Drawing.Point(13, 113);
             this.btnPasteFromClipboard.Name = "btnPasteFromClipboard";
-            this.btnPasteFromClipboard.Size = new System.Drawing.Size(27, 380);
+            this.btnPasteFromClipboard.Size = new System.Drawing.Size(27, 360);
             this.btnPasteFromClipboard.TabIndex = 7;
             this.btnPasteFromClipboard.Text = "=> P A S T E  =>";
             this.btnPasteFromClipboard.UseVisualStyleBackColor = false;
             this.btnPasteFromClipboard.Click += new System.EventHandler(this.btnPasteFromClipboard_Click);
-            // 
-            // rtbInputText
-            // 
-            this.tableLayoutPanel1.SetColumnSpan(this.rtbInputText, 6);
-            this.rtbInputText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbInputText.Location = new System.Drawing.Point(46, 93);
-            this.rtbInputText.Name = "rtbInputText";
-            this.rtbInputText.Size = new System.Drawing.Size(711, 380);
-            this.rtbInputText.TabIndex = 5;
-            this.rtbInputText.Text = "";
             // 
             // btnEncode
             // 
@@ -222,6 +226,129 @@
             this.btnExit.Text = "E&xit";
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
+            // rtbInputText
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.rtbInputText, 6);
+            this.rtbInputText.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbInputText.Location = new System.Drawing.Point(46, 113);
+            this.rtbInputText.Name = "rtbInputText";
+            this.rtbInputText.Size = new System.Drawing.Size(711, 360);
+            this.rtbInputText.TabIndex = 13;
+            this.rtbInputText.Text = "";
+            // 
+            // panel1
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.panel1, 5);
+            this.panel1.Controls.Add(this.rdoEncBigEndianUnicode);
+            this.panel1.Controls.Add(this.rdoEncNone);
+            this.panel1.Controls.Add(this.rdoEncUnicode);
+            this.panel1.Controls.Add(this.rdoEncUTF32);
+            this.panel1.Controls.Add(this.rdoEncAscii);
+            this.panel1.Controls.Add(this.rdoEncUTF7);
+            this.panel1.Controls.Add(this.rdoEncUTF8);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(155, 68);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(602, 19);
+            this.panel1.TabIndex = 15;
+            // 
+            // rdoEncBigEndianUnicode
+            // 
+            this.rdoEncBigEndianUnicode.AutoSize = true;
+            this.rdoEncBigEndianUnicode.Location = new System.Drawing.Point(480, 0);
+            this.rdoEncBigEndianUnicode.Name = "rdoEncBigEndianUnicode";
+            this.rdoEncBigEndianUnicode.Size = new System.Drawing.Size(119, 17);
+            this.rdoEncBigEndianUnicode.TabIndex = 6;
+            this.rdoEncBigEndianUnicode.TabStop = true;
+            this.rdoEncBigEndianUnicode.Text = "Big Endian Unicode";
+            this.rdoEncBigEndianUnicode.UseVisualStyleBackColor = true;
+            this.rdoEncBigEndianUnicode.CheckedChanged += new System.EventHandler(this.rdoEncBigEndianUnicode_CheckedChanged);
+            // 
+            // rdoEncNone
+            // 
+            this.rdoEncNone.AutoSize = true;
+            this.rdoEncNone.Location = new System.Drawing.Point(3, 0);
+            this.rdoEncNone.Name = "rdoEncNone";
+            this.rdoEncNone.Size = new System.Drawing.Size(51, 17);
+            this.rdoEncNone.TabIndex = 0;
+            this.rdoEncNone.TabStop = true;
+            this.rdoEncNone.Text = "None";
+            this.rdoEncNone.UseVisualStyleBackColor = true;
+            this.rdoEncNone.CheckedChanged += new System.EventHandler(this.rdoEncNone_CheckedChanged);
+            // 
+            // rdoEncUnicode
+            // 
+            this.rdoEncUnicode.AutoSize = true;
+            this.rdoEncUnicode.Location = new System.Drawing.Point(394, 0);
+            this.rdoEncUnicode.Name = "rdoEncUnicode";
+            this.rdoEncUnicode.Size = new System.Drawing.Size(65, 17);
+            this.rdoEncUnicode.TabIndex = 3;
+            this.rdoEncUnicode.TabStop = true;
+            this.rdoEncUnicode.Text = "Unicode";
+            this.rdoEncUnicode.UseVisualStyleBackColor = true;
+            this.rdoEncUnicode.CheckedChanged += new System.EventHandler(this.rdoEncUnicode_CheckedChanged);
+            // 
+            // rdoEncUTF32
+            // 
+            this.rdoEncUTF32.AutoSize = true;
+            this.rdoEncUTF32.Location = new System.Drawing.Point(307, 0);
+            this.rdoEncUTF32.Name = "rdoEncUTF32";
+            this.rdoEncUTF32.Size = new System.Drawing.Size(61, 17);
+            this.rdoEncUTF32.TabIndex = 5;
+            this.rdoEncUTF32.TabStop = true;
+            this.rdoEncUTF32.Text = "UTF-32";
+            this.rdoEncUTF32.UseVisualStyleBackColor = true;
+            this.rdoEncUTF32.CheckedChanged += new System.EventHandler(this.rdoEncUTF32_CheckedChanged);
+            // 
+            // rdoEncAscii
+            // 
+            this.rdoEncAscii.AutoSize = true;
+            this.rdoEncAscii.Location = new System.Drawing.Point(81, 0);
+            this.rdoEncAscii.Name = "rdoEncAscii";
+            this.rdoEncAscii.Size = new System.Drawing.Size(52, 17);
+            this.rdoEncAscii.TabIndex = 1;
+            this.rdoEncAscii.TabStop = true;
+            this.rdoEncAscii.Text = "ASCII";
+            this.rdoEncAscii.UseVisualStyleBackColor = true;
+            this.rdoEncAscii.CheckedChanged += new System.EventHandler(this.rdoEncAscii_CheckedChanged);
+            // 
+            // rdoEncUTF7
+            // 
+            this.rdoEncUTF7.AutoSize = true;
+            this.rdoEncUTF7.Location = new System.Drawing.Point(233, 0);
+            this.rdoEncUTF7.Name = "rdoEncUTF7";
+            this.rdoEncUTF7.Size = new System.Drawing.Size(55, 17);
+            this.rdoEncUTF7.TabIndex = 4;
+            this.rdoEncUTF7.TabStop = true;
+            this.rdoEncUTF7.Text = "UTF-7";
+            this.rdoEncUTF7.UseVisualStyleBackColor = true;
+            this.rdoEncUTF7.CheckedChanged += new System.EventHandler(this.rdoEncUTF7_CheckedChanged);
+            // 
+            // rdoEncUTF8
+            // 
+            this.rdoEncUTF8.AutoSize = true;
+            this.rdoEncUTF8.Location = new System.Drawing.Point(156, 0);
+            this.rdoEncUTF8.Name = "rdoEncUTF8";
+            this.rdoEncUTF8.Size = new System.Drawing.Size(55, 17);
+            this.rdoEncUTF8.TabIndex = 2;
+            this.rdoEncUTF8.TabStop = true;
+            this.rdoEncUTF8.Text = "UTF-8";
+            this.rdoEncUTF8.UseVisualStyleBackColor = true;
+            this.rdoEncUTF8.CheckedChanged += new System.EventHandler(this.rdoEncUTF8_CheckedChanged);
+            // 
+            // lblEncDesc
+            // 
+            this.lblEncDesc.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.lblEncDesc, 5);
+            this.lblEncDesc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblEncDesc.Location = new System.Drawing.Point(155, 90);
+            this.lblEncDesc.Name = "lblEncDesc";
+            this.lblEncDesc.Size = new System.Drawing.Size(602, 20);
+            this.lblEncDesc.TabIndex = 16;
+            this.lblEncDesc.Text = "* Options apply to format of text prior to Base64 encoding and after Base64 decod" +
+    "ing.  Results may vary with Drag and Drop as it is difficult to determine the en" +
+    "coding used for the file.";
             // 
             // menuStrip1
             // 
@@ -274,9 +401,11 @@
             this.ShowInTaskbar = false;
             this.Text = "Base64EncodeDecode";
             this.tabForms.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
+            this.mainTabPage.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -287,10 +416,9 @@
         #endregion
 
         private System.Windows.Forms.TabControl tabForms;
-        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage mainTabPage;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.RichTextBox rtbInputText;
         private System.Windows.Forms.Button btnOpenFile;
         private System.Windows.Forms.TextBox txtFileName;
         private System.Windows.Forms.RadioButton rdoTextString;
@@ -303,6 +431,16 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiFile;
         private System.Windows.Forms.ToolStripMenuItem tsmiClearTabs;
         private System.Windows.Forms.ToolStripMenuItem tsmiExit;
+        private System.Windows.Forms.RichTextBox rtbInputText;
+        private System.Windows.Forms.RadioButton rdoEncUTF32;
+        private System.Windows.Forms.RadioButton rdoEncUTF7;
+        private System.Windows.Forms.RadioButton rdoEncUnicode;
+        private System.Windows.Forms.RadioButton rdoEncUTF8;
+        private System.Windows.Forms.RadioButton rdoEncAscii;
+        private System.Windows.Forms.RadioButton rdoEncNone;
+        private System.Windows.Forms.RadioButton rdoEncBigEndianUnicode;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label lblEncDesc;
     }
 }
 
