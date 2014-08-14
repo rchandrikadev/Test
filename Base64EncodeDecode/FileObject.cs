@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Base64EncodeDecode
 {
+    /// <summary>
+    /// Defines the file name and binary data for a file object
+    /// </summary>
     public class FileObject
     {
         private string _fileName;

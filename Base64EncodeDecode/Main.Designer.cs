@@ -160,7 +160,7 @@
             // 
             this.rdoTextString.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.rdoTextString, 2);
-            this.rdoTextString.Location = new System.Drawing.Point(13, 68);
+            this.rdoTextString.Location = new System.Drawing.Point(13, 83);
             this.rdoTextString.Name = "rdoTextString";
             this.rdoTextString.Size = new System.Drawing.Size(52, 17);
             this.rdoTextString.TabIndex = 6;
@@ -173,9 +173,9 @@
             // 
             this.btnPasteFromClipboard.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.btnPasteFromClipboard.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnPasteFromClipboard.Location = new System.Drawing.Point(13, 113);
+            this.btnPasteFromClipboard.Location = new System.Drawing.Point(13, 143);
             this.btnPasteFromClipboard.Name = "btnPasteFromClipboard";
-            this.btnPasteFromClipboard.Size = new System.Drawing.Size(27, 360);
+            this.btnPasteFromClipboard.Size = new System.Drawing.Size(27, 330);
             this.btnPasteFromClipboard.TabIndex = 7;
             this.btnPasteFromClipboard.Text = "=> P A S T E  =>";
             this.btnPasteFromClipboard.UseVisualStyleBackColor = false;
@@ -231,9 +231,9 @@
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.rtbInputText, 6);
             this.rtbInputText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbInputText.Location = new System.Drawing.Point(46, 113);
+            this.rtbInputText.Location = new System.Drawing.Point(46, 143);
             this.rtbInputText.Name = "rtbInputText";
-            this.rtbInputText.Size = new System.Drawing.Size(711, 360);
+            this.rtbInputText.Size = new System.Drawing.Size(711, 330);
             this.rtbInputText.TabIndex = 13;
             this.rtbInputText.Text = "";
             // 
@@ -248,7 +248,7 @@
             this.panel1.Controls.Add(this.rdoEncUTF7);
             this.panel1.Controls.Add(this.rdoEncUTF8);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(155, 68);
+            this.panel1.Location = new System.Drawing.Point(155, 83);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(602, 19);
             this.panel1.TabIndex = 15;
@@ -342,9 +342,9 @@
             this.lblEncDesc.AutoSize = true;
             this.tableLayoutPanel1.SetColumnSpan(this.lblEncDesc, 5);
             this.lblEncDesc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblEncDesc.Location = new System.Drawing.Point(155, 90);
+            this.lblEncDesc.Location = new System.Drawing.Point(155, 105);
             this.lblEncDesc.Name = "lblEncDesc";
-            this.lblEncDesc.Size = new System.Drawing.Size(602, 20);
+            this.lblEncDesc.Size = new System.Drawing.Size(602, 35);
             this.lblEncDesc.TabIndex = 16;
             this.lblEncDesc.Text = "* Options apply to format of text prior to Base64 encoding and after Base64 decod" +
     "ing.  Results may vary with Drag and Drop as it is difficult to determine the en" +

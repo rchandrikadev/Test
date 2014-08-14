@@ -11,16 +11,29 @@ using System.IO;
 
 namespace Base64EncodeDecode
 {
+    /// <summary>
+    /// User Control for displaying text results
+    /// </summary>
     public partial class ResultsControl : UserControl
     {
         FileObject _data;
         TabControl _tabControl;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResultsControl"/> class.
+        /// </summary>
         public ResultsControl()
         {
             InitializeComponent();
         }
 
+        #region Public Methods
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResultsControl"/> class.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="results">The results.</param>
+        /// <param name="tabControl">The tab control.</param>
         public ResultsControl(FileObject data, string results, ref TabControl tabControl)
         {
             InitializeComponent();
@@ -32,11 +45,37 @@ namespace Base64EncodeDecode
                 btnSaveResultAsFile.Enabled = true;
         }
 
+        /// <summary>
+        /// Removes the tab.
+        /// </summary>
+        public void RemoveTab()
+        {
+            _data = null;
+            _tabControl.TabPages.Remove((TabPage)this.Parent);
+            this.Dispose();
+        }
+        #endregion Public Methods
+
+        #region Private Methods
+
+        #endregion Private Methods
+
+        #region Event Handlers
+        /// <summary>
+        /// Handles the Click event of the btnClose control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnClose_Click(object sender, EventArgs e)
         {
-            _tabControl.TabPages.Remove((TabPage)this.Parent);
+            RemoveTab();
         }
 
+        /// <summary>
+        /// Handles the Click event of the btnSaveResultAsFile control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnSaveResultAsFile_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog1 = new SaveFileDialog()
@@ -54,9 +93,15 @@ namespace Base64EncodeDecode
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the btnCopy control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnCopy_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(rtbResults.Text);
         }
+        #endregion Event Handlers
     }
 }

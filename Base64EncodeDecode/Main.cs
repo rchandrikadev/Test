@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 namespace Base64EncodeDecode
 {
+    /// <summary>
+    /// The main form that loads when the application starts
+    /// </summary>
     public partial class frmMain : Form
     {
         private List<FileObject> _data = new List<FileObject>();
@@ -39,13 +42,220 @@ namespace Base64EncodeDecode
             this.tableLayoutPanel1.CellPaint += tableLayoutPanel1_CellPaint;
         }
 
-        private void DropFileInControlt_DragOver(object sender, DragEventArgs e)
+        #region Public Methods
+        /// <summary>
+        /// Adds a tab.
+        /// </summary>
+        /// <param name="tabName">Name of the tab.</param>
+        /// <param name="data">The data.</param>
+        /// <param name="results">The results.</param>
+        public void AddTab(string tabName, FileObject data, string results)
         {
+            TabPage tbp = new TabPage();
+            tbp.Name = "tab" + tabForms.TabPages.Count.ToString();
+            tbp.Text = tabName;
+            ResultsControl cnt = new ResultsControl(data, results, ref tabForms);
+            cnt.Name = tbp.Name + "_cnt";
+            cnt.Dock = DockStyle.Fill;
+            tbp.Controls.Add(cnt);
+            tabForms.TabPages.Add(tbp);
+            cnt.Show();
+            cnt.Select();
+        }
+        #endregion Public Methods
 
-            e.Effect = DragDropEffects.Move;
-
+        #region Private Methods
+        /// <summary>
+        /// Resets the form.
+        /// </summary>
+        private void ResetForm()
+        {
+            rdoFileFormat.Checked = true;
+            rdoEncNone.Checked = true;
+            txtFileName.Text = "";
+            rtbInputText.Text = "";
+            btnPasteFromClipboard.Enabled = false;
+            _data.Clear();
         }
 
+        /// <summary>
+        /// Encodes the file.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <returns></returns>
+        private string EncodeFile(byte[] data)
+        {
+            try
+            {
+                return Convert.ToBase64String(data);
+            }
+            catch (Exception ex)
+            {
+                return "Input is not in a format that is valid for selected Action.  Original error: " + ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Decodes the file.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <returns></returns>
+        private string DecodeFile(byte [] data)
+        {
+            try
+            {
+                string dataString = GetString(data);
+
+                //this will fail to convert if data was not a base64 string
+                byte[] b = Convert.FromBase64String(dataString);
+                return GetString(b);
+            }
+            catch (Exception ex)
+            {
+                return "Input is not in a format that is valid for selected Action.  Original error: " + ex.Message;
+            }
+        }
+
+        /// <summary>
+        /// Loads the file objects.
+        /// </summary>
+        private void LoadFileObjects()
+        {
+            _data.Clear();
+            if (!string.IsNullOrWhiteSpace(txtFileName.Text))
+            {
+                int fileCount = 0;
+                string[] files = txtFileName.Text.Split(';');
+                foreach (string file in files)
+                {
+                    try
+                    {
+                        if (fileCount++ == 0)
+                            txtFileName.Text = file;
+                        else
+                            txtFileName.Text += "; " + file;
+
+                        using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
+                        {
+                            byte[] data = new byte[(int)stream.Length];
+                            stream.Read(data, 0, (int)stream.Length);
+                            _data.Add(new FileObject() { FileName = file.Trim(), FileData = data });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error: " + ex.Message, "Error");
+                    }
+                }
+
+                _inputFilePath = Path.GetDirectoryName(files[0]);
+            }
+        }
+
+        /// <summary>
+        /// Gets the string input tab count.
+        /// </summary>
+        /// <returns></returns>
+        private int GetStringInputTabCount()
+        {
+            foreach (TabPage page in tabForms.TabPages)
+            {
+                if (page.Text.StartsWith("Results for String input ("))
+                {
+                    _stringInputTabCount++;
+                }
+            }
+
+            return _stringInputTabCount;
+        }
+
+        /// <summary>
+        /// Gets the bytes.
+        /// </summary>
+        /// <param name="str">The string.</param>
+        /// <returns></returns>
+        private byte[] GetBytes(string str)
+        {
+            if (_encoding == Encoding.ASCII)
+                return Encoding.ASCII.GetBytes(str);
+            else if (_encoding == Encoding.UTF8)
+                return Encoding.UTF8.GetBytes(str);
+            else if (_encoding == Encoding.UTF7)
+                return Encoding.UTF7.GetBytes(str);
+            else if (_encoding == Encoding.UTF32)
+                return Encoding.UTF32.GetBytes(str);
+            else if (_encoding == Encoding.Unicode)
+                return Encoding.Unicode.GetBytes(str);
+            else if (_encoding == Encoding.BigEndianUnicode)
+                return Encoding.BigEndianUnicode.GetBytes(str);
+            else
+            {
+                byte[] bytes = new byte[str.Length * sizeof(char)];
+                System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
+                return bytes;
+            }
+        }
+
+        /// <summary>
+        /// Gets the string.
+        /// </summary>
+        /// <param name="bytes">The bytes.</param>
+        /// <returns></returns>
+        private string GetString(byte[] bytes)
+        {
+            if (_encoding == Encoding.ASCII)
+                return Encoding.ASCII.GetString(bytes);
+            else if (_encoding == Encoding.UTF8)
+                return Encoding.UTF8.GetString(bytes);
+            else if (_encoding == Encoding.UTF7)
+                return Encoding.UTF7.GetString(bytes);
+            else if (_encoding == Encoding.UTF32)
+                return Encoding.UTF32.GetString(bytes);
+            else if (_encoding == Encoding.Unicode)
+                return Encoding.Unicode.GetString(bytes);
+            else if (_encoding == Encoding.BigEndianUnicode)
+                return Encoding.BigEndianUnicode.GetString(bytes);
+            else
+            {
+                char[] chars = new char[bytes.Length / sizeof(char)];
+                System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
+                return new string(chars);
+            }
+        }
+
+        /// <summary>
+        /// Sets the WaitCursur.
+        /// </summary>
+        private void SetBusy()
+        {
+            this.Cursor = Cursors.WaitCursor;
+        }
+
+        /// <summary>
+        /// Sets the cursor back to Default.
+        /// </summary>
+        private void SetNotBusy()
+        {
+            this.Cursor = Cursors.Default;
+        }
+        #endregion Private Methods
+
+        #region Event Handlers
+        /// <summary>
+        /// Handles the DragOver event of the DropFileInControlt control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>
+        private void DropFileInControlt_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        /// <summary>
+        /// Handles the DragDrop event of the DropFileInControlt control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>
         private void DropFileInControlt_DragDrop(object sender, DragEventArgs e)
         {
             SetBusy();
@@ -101,6 +311,11 @@ namespace Base64EncodeDecode
             SetNotBusy();
         }
 
+        /// <summary>
+        /// Handles the Click event of the btnOpenFile control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnOpenFile_Click(object sender, EventArgs e)
         {
             SetBusy();
@@ -135,6 +350,11 @@ namespace Base64EncodeDecode
             SetNotBusy();
         }
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the rdoFileFormat control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void rdoFileFormat_CheckedChanged(object sender, EventArgs e)
         {
             if (rdoFileFormat.Checked)
@@ -154,6 +374,11 @@ namespace Base64EncodeDecode
             }
         }
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the rdoTextString control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void rdoTextString_CheckedChanged(object sender, EventArgs e)
         {
             if (rdoTextString.Checked)
@@ -173,11 +398,21 @@ namespace Base64EncodeDecode
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the btnReset control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnReset_Click(object sender, EventArgs e)
         {
             ResetForm();
         }
 
+        /// <summary>
+        /// Handles the Click event of the btnExit control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnExit_Click(object sender, EventArgs e)
         {
             _data.Clear();
@@ -185,6 +420,11 @@ namespace Base64EncodeDecode
             Application.Exit();
         }
 
+        /// <summary>
+        /// Handles the Click event of the btnEncode control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnEncode_Click(object sender, EventArgs e)
         {
             SetBusy();
@@ -242,6 +482,11 @@ namespace Base64EncodeDecode
             SetNotBusy();
         }
 
+        /// <summary>
+        /// Handles the Click event of the btnDecode control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnDecode_Click(object sender, EventArgs e)
         {
             SetBusy();
@@ -321,153 +566,21 @@ namespace Base64EncodeDecode
             SetNotBusy();
         }
 
-        private void ResetForm()
-        {
-            rdoFileFormat.Checked = true;
-            rdoEncNone.Checked = true;
-            txtFileName.Text = "";
-            rtbInputText.Text = "";
-            btnPasteFromClipboard.Enabled = false;
-            _data.Clear();
-        }
-
-        private string EncodeFile(byte[] data)
-        {
-            try
-            {
-                return Convert.ToBase64String(data);
-            }
-            catch (Exception ex)
-            {
-                return "Input is not in a format that is valid for selected Action.  Original error: " + ex.Message;
-            }
-        }
-
-        private string DecodeFile(byte [] data)
-        {
-            try
-            {
-                string dataString = GetString(data);
-
-                //this will fail to convert if data was not a base64 string
-                byte[] b = Convert.FromBase64String(dataString);
-                return GetString(b);
-            }
-            catch (Exception ex)
-            {
-                return "Input is not in a format that is valid for selected Action.  Original error: " + ex.Message;
-            }
-        }
-
-        private void LoadFileObjects()
-        {
-            _data.Clear();
-            if (!string.IsNullOrWhiteSpace(txtFileName.Text))
-            {
-                int fileCount = 0;
-                string[] files = txtFileName.Text.Split(';');
-                foreach (string file in files)
-                {
-                    try
-                    {
-                        if (fileCount++ == 0)
-                            txtFileName.Text = file;
-                        else
-                            txtFileName.Text += "; " + file;
-
-                        using (Stream stream = File.Open(file, FileMode.Open, FileAccess.Read))
-                        {
-                            byte[] data = new byte[(int)stream.Length];
-                            stream.Read(data, 0, (int)stream.Length);
-                            _data.Add(new FileObject() { FileName = file.Trim(), FileData = data });
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Error: " + ex.Message, "Error");
-                    }
-                }
-
-                _inputFilePath = Path.GetDirectoryName(files[0]);
-            }
-        }
-
-        public void AddTab(string tabName, FileObject data, string results)
-        {
-            TabPage tbp = new TabPage();
-            tbp.Name = "tab" + tabForms.TabPages.Count.ToString();
-            tbp.Text = tabName;
-            ResultsControl cnt = new ResultsControl(data, results, ref tabForms);
-            cnt.Name = tbp.Name + "_cnt";
-            cnt.Dock = DockStyle.Fill;
-            tbp.Controls.Add(cnt);
-            tabForms.TabPages.Add(tbp);
-            cnt.Show();
-            cnt.Select();
-        }
-
-        private int GetStringInputTabCount()
-        {
-            foreach (TabPage page in tabForms.TabPages)
-            {
-                if (page.Text.StartsWith("Results for String input ("))
-                {
-                    _stringInputTabCount++;
-                }
-            }
-
-            return _stringInputTabCount;
-        }
-
-        private byte[] GetBytes(string str)
-        {
-            if (_encoding == Encoding.ASCII)
-                return Encoding.ASCII.GetBytes(str);
-            else if (_encoding == Encoding.UTF8)
-                return Encoding.UTF8.GetBytes(str);
-            else if (_encoding == Encoding.UTF7)
-                return Encoding.UTF7.GetBytes(str);
-            else if (_encoding == Encoding.UTF32)
-                return Encoding.UTF32.GetBytes(str);
-            else if (_encoding == Encoding.Unicode)
-                return Encoding.Unicode.GetBytes(str);
-            else if (_encoding == Encoding.BigEndianUnicode)
-                return Encoding.BigEndianUnicode.GetBytes(str);
-            else
-            {
-                byte[] bytes = new byte[str.Length * sizeof(char)];
-                System.Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-                return bytes;
-            }
-        }
-
-        private string GetString(byte[] bytes)
-        {
-            if (_encoding == Encoding.ASCII)
-                return Encoding.ASCII.GetString(bytes);
-            else if (_encoding == Encoding.UTF8)
-                return Encoding.UTF8.GetString(bytes);
-            else if (_encoding == Encoding.UTF7)
-                return Encoding.UTF7.GetString(bytes);
-            else if (_encoding == Encoding.UTF32)
-                return Encoding.UTF32.GetString(bytes);
-            else if (_encoding == Encoding.Unicode)
-                return Encoding.Unicode.GetString(bytes);
-            else if (_encoding == Encoding.BigEndianUnicode)
-                return Encoding.BigEndianUnicode.GetString(bytes);
-            else
-            {
-                char[] chars = new char[bytes.Length / sizeof(char)];
-                System.Buffer.BlockCopy(bytes, 0, chars, 0, bytes.Length);
-                return new string(chars);
-            }
-        }
-
+        /// <summary>
+        /// Handles the Click event of the btnPasteFromClipboard control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnPasteFromClipboard_Click(object sender, EventArgs e)
         {
             rtbInputText.Text = Clipboard.GetText();
         }
 
+        /// <summary>
+        /// Handles the Click event of the tsmiExit control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void tsmiExit_Click(object sender, EventArgs e)
         {
             _data.Clear();
@@ -475,61 +588,105 @@ namespace Base64EncodeDecode
             Application.Exit();
         }
 
+        /// <summary>
+        /// Handles the Click event of the tsmiClearTabs control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void tsmiClearTabs_Click(object sender, EventArgs e)
         {
             _stringInputTabCount = 0;
             foreach (TabPage page in tabForms.TabPages)
             {
                 if (page.Name != "mainTabPage")
-                    tabForms.TabPages.Remove(page);
+                {
+                    foreach (Control cntrl in page.Controls)
+                    {
+                        if (cntrl is ResultsControl)
+                        {
+                            ((ResultsControl)cntrl).RemoveTab();
+                            break;
+                        }
+                    }
+                }
             }
         }
 
-        private void SetBusy()
-        {
-            this.Cursor = Cursors.WaitCursor;
-        }
-
-        private void SetNotBusy()
-        {
-            this.Cursor = Cursors.Default;
-        }
-
+        /// <summary>
+        /// Handles the CheckedChanged event of the rdoEncNone control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void rdoEncNone_CheckedChanged(object sender, EventArgs e)
         {
-             _encoding = null;
+            _encoding = null;
         }
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the rdoEncAscii control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void rdoEncAscii_CheckedChanged(object sender, EventArgs e)
         {
             _encoding = Encoding.ASCII;
         }
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the rdoEncUTF8 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void rdoEncUTF8_CheckedChanged(object sender, EventArgs e)
         {
             _encoding = Encoding.UTF8;
         }
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the rdoEncUTF7 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void rdoEncUTF7_CheckedChanged(object sender, EventArgs e)
         {
             _encoding = Encoding.UTF7;
         }
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the rdoEncUTF32 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void rdoEncUTF32_CheckedChanged(object sender, EventArgs e)
         {
             _encoding = Encoding.UTF32;
         }
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the rdoEncUnicode control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void rdoEncUnicode_CheckedChanged(object sender, EventArgs e)
         {
             _encoding = Encoding.Unicode;
         }
 
+        /// <summary>
+        /// Handles the CheckedChanged event of the rdoEncBigEndianUnicode control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void rdoEncBigEndianUnicode_CheckedChanged(object sender, EventArgs e)
         {
             _encoding = Encoding.BigEndianUnicode;
         }
 
+        /// <summary>
+        /// Handles the CellPaint event of the tableLayoutPanel1 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="TableLayoutCellPaintEventArgs"/> instance containing the event data.</param>
         private void tableLayoutPanel1_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
         {
             if (e.Row == 0 || e.Row == 3 || e.Row == 7)
@@ -538,5 +695,6 @@ namespace Base64EncodeDecode
             if (e.Row == 7)
                 e.Graphics.DrawLine(Pens.Black, new Point(e.CellBounds.Left, e.CellBounds.Bottom), new Point(e.CellBounds.Right, e.CellBounds.Bottom));
         }
+        #endregion Event Handlers
     }
 }
