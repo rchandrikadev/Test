@@ -83,9 +83,11 @@ namespace Base64EncodeDecode
                 InitialDirectory = Path.GetDirectoryName(_data.FileName),
                 DefaultExt = ".tmp",
                 FileName = "base64",
+                //Test
                 FilterIndex = 1,
                 Filter = "All Files|*.*"
             };
+            //Testing the change and again
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllBytes(saveFileDialog1.FileName, _data.FileData);
