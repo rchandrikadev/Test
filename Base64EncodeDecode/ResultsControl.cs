@@ -86,9 +86,6 @@ namespace Base64EncodeDecode
                 FilterIndex = 1,
                 Filter = "All Files|*.*"
             };
-
-            //Test Hot Fix and Development Branch Test
-
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 File.WriteAllBytes(saveFileDialog1.FileName, _data.FileData);
